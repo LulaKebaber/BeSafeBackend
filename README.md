@@ -58,6 +58,7 @@ The main sections of the project are:
 ## ⚙️ Local Development
 
 ```
+export PATH="$HOME/.local/bin:$PATH"
 poetry install
 poetry shell
 sh ./scripts/launch.sh
