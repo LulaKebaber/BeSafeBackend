@@ -28,5 +28,5 @@ def authorize_user(
         raise InvalidCredentialsException
 
     return AuthorizeUserResponse(
-        access_token=svc.jwt_svc.create_access_token(user=user),
+        access_token=svc.jwt_svc.create_access_token(user=user)
     )
