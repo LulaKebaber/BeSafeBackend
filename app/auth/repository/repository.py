@@ -3,10 +3,10 @@ from typing import Optional, List
 
 from bson.objectid import ObjectId
 from pymongo.database import Database
-from models import Contact
+from ..models import Contact
 
 
-# from ..router.router_get_contacts import Contact
+# fr.om ..router.router_get_contacts import Contact
 
 from ..utils.security import hash_password
 
@@ -58,25 +58,36 @@ class WordsRepository:
         self.database = database
 
     def add_new_word(self, user_id: str, word: str):
+        word_data = {
+            "word": word.word,
+            "timestamp": word.timestamp,
+        }
         self.database["users"].update_one(
-            filter={"_id": ObjectId(user_id)}, update={"$push": {"words": word}}
+            filter={"_id": ObjectId(user_id)},
+            update={"$push": {"words": word_data}},
         )
 
     def get_user_words(self, user_id: str):
         user = self.database["users"].find_one({"_id": ObjectId(user_id)}, {"words": 1})
         words = user.get("words", []) if user else []
-        return words
+
+        # Convert the words list to a list of dictionaries with word and timestamp
+        words_with_timestamps = [
+            {"word": word["word"], "timestamp": word["timestamp"]} for word in words
+        ]
+
+        return words_with_timestamps
 
     def add_new_contact(self, user_id: str, data: dict):
+        contact_data = {
+            "name": data["name"],
+            "phone": data["phone"],
+            "gps": data["gps"],
+        }
+
         self.database["users"].update_one(
             filter={"_id": ObjectId(user_id)},
-            update={
-                "$push": {
-                    "name": data["name"],
-                    "phone": data["phone"],
-                    "gps": data["gps"],
-                }
-            },
+            update={"$push": {"contacts": contact_data}},
         )
 
     def get_user_contacts(self, user_id: str) -> List[Contact]:
@@ -84,4 +95,23 @@ class WordsRepository:
             {"_id": ObjectId(user_id)}, {"contacts": 1}
         )
         contacts = user.get("contacts", []) if user else []
-        return [Contact(**c) for c in contacts]
+
+        # Convert the words list to a list of dictionaries with word and timestamp
+        contacts_data = [
+            {
+                "name": contact["name"],
+                "phone": contact["phone"],
+                "gps": contact["gps"],
+            }
+            for contact in contacts
+        ]
+
+        return contacts_data
+        # user = self.database["users"].find_one({"_id": ObjectId(user_id)})
+        # contacts = []
+        # for i in range(len(user["phone"])):
+        #     contact = Contact(
+        #         name=user["name"][i], phone=user["phone"][i], gps=user["gps"][i]
+        #     )
+        #     contacts.append(contact)
+        # return contacts

@@ -4,7 +4,7 @@ from fastapi import Depends, status
 
 from app.utils import AppModel
 
-from models import Contact
+from ..models import Contact
 
 from ..adapters.jwt_service import JWTData
 from ..service import Service, get_service
