@@ -12,11 +12,11 @@ class AddWordRequest(AppModel):
     word: str
 
 
-@router.post("/users/{user_id}/words", status_code=status.HTTP_201_CREATED)
-def add_words(
+@router.post("/users/words", status_code=status.HTTP_201_CREATED)
+def add_word(
     input: AddWordRequest,
     svc: Service = Depends(get_service),
     jwt_data: JWTData = Depends(parse_jwt_user_data),
 ):
-    svc.word_repository.add_new_word(jwt_data.user_id, input)
+    svc.word_repository.add_new_word(jwt_data.user_id, input.word)
     return Response(status_code=status.HTTP_201_CREATED)
