@@ -19,4 +19,4 @@ def add_user(
     jwt_data: JWTData = Depends(parse_jwt_user_data),
 ):
     svc.word_repository.add_new_word(jwt_data.user_id, input)
-    return Response(status_code=200)
+    return Response(status_code=status.HTTP_201_CREATED)
