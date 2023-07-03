@@ -54,6 +54,11 @@ class WordsRepository:
         self.database = database
 
     def add_new_word(self, user_id: str, word: str):
-        self.database["users"].find_one_and_update(
-            {"_id": ObjectId(user_id)}, {"$push": {"words": word}}
+        self.database["users"].update_one(
+            filter={"_id": ObjectId(user_id)}, update={"$push": {"words": word}}
         )
+
+    def get_user_words(self, user_id: str):
+        user = self.database["users"].find_one({"_id": ObjectId(user_id)}, {"words": 1})
+        words = user.get("words", []) if user else []
+        return words
