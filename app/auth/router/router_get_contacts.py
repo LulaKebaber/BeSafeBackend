@@ -26,7 +26,7 @@ class GetAllContactsResponse(AppModel):
     response_model=GetAllContactsResponse,
     status_code=status.HTTP_200_OK,
 )
-def get_user_contacts(
+def get_contacts(
     jwt_data: JWTData = Depends(parse_jwt_user_data),
     svc: Service = Depends(get_service),
 ) -> GetAllContactsResponse:
