@@ -1,20 +1,15 @@
 from typing import List
 
 from fastapi import Depends, status
-from pydantic import Field
 
 from app.utils import AppModel
+
+from models import Contact
 
 from ..adapters.jwt_service import JWTData
 from ..service import Service, get_service
 from . import router
 from .dependencies import parse_jwt_user_data
-
-
-class Contact(AppModel):
-    name: str
-    phone: str
-    gps: bool
 
 
 class GetAllContactsResponse(AppModel):

@@ -3,6 +3,8 @@ from typing import Optional, List
 
 from bson.objectid import ObjectId
 from pymongo.database import Database
+from models import Contact
+
 
 # from ..router.router_get_contacts import Contact
 
@@ -77,9 +79,9 @@ class WordsRepository:
             },
         )
 
-    def get_user_contacts(self, user_id: str) -> List:
+    def get_user_contacts(self, user_id: str) -> List[Contact]:
         user = self.database["users"].find_one(
             {"_id": ObjectId(user_id)}, {"contacts": 1}
         )
         contacts = user.get("contacts", []) if user else []
-        return contacts
+        return [Contact(**c) for c in contacts]
