@@ -14,11 +14,11 @@ class AddContactRequest(AppModel):
     gps: bool
 
 
-@router.post("/users/words", status_code=status.HTTP_201_CREATED)
-def add_word(
+@router.post("/users/contacts", status_code=status.HTTP_201_CREATED)
+def add_contact(
     input: AddContactRequest,
     svc: Service = Depends(get_service),
     jwt_data: JWTData = Depends(parse_jwt_user_data),
 ):
-    svc.word_repository.add_new_contact(jwt_data.user_id, input.dict)
+    svc.word_repository.add_new_contact(jwt_data.user_id, input.dict())
     return Response(status_code=status.HTTP_201_CREATED)
