@@ -19,7 +19,7 @@ config = AuthConfig()
 class Service:
     def __init__(self):
         self.repository = AuthRepository(database)
-        self.word_repository = WordsRepository()
+        self.word_repository = WordsRepository(database)
         self.jwt_svc = JwtService(config.JWT_ALG, config.JWT_SECRET, config.JWT_EXP)
 
 

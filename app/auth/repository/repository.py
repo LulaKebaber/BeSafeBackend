@@ -54,6 +54,4 @@ class WordsRepository:
         self.database = database
 
     def add_new_word(self, user_id: str, word: str):
-        self.database["users"].insert_one(
-            filter={"_id": ObjectId(user_id)}, update={"set": {"word": word}}
-        )
+        self.database["users"].insert_one({"set": {"word": word}})
