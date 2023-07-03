@@ -62,3 +62,15 @@ class WordsRepository:
         user = self.database["users"].find_one({"_id": ObjectId(user_id)}, {"words": 1})
         words = user.get("words", []) if user else []
         return words
+
+    def add_new_contact(self, user_id: str, data: dict):
+        self.database["users"].update_one(
+            filter={"_id": ObjectId(user_id)},
+            update={
+                "$push": {
+                    "name": data["name"],
+                    "phone": data["phone"],
+                    "gps": data["gps"],
+                }
+            },
+        )

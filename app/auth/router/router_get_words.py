@@ -1,6 +1,6 @@
-from typing import Any
+from typing import List
 
-from fastapi import Depends, Response
+from fastapi import Depends
 from pydantic import Field
 
 from app.utils import AppModel
@@ -11,14 +11,18 @@ from . import router
 from .dependencies import parse_jwt_user_data
 
 
+class Word(AppModel):
+    word: str
+
+
 class GetAllWordsResponse(AppModel):
-    words: dict
+    words: List[Word]
 
 
 @router.get("/users/words", response_model=GetAllWordsResponse)
-def get_my_account(
+def get_user_words(
     jwt_data: JWTData = Depends(parse_jwt_user_data),
     svc: Service = Depends(get_service),
-) -> dict[str, str]:
+) -> GetAllWordsResponse:
     words = svc.word_repository.get_user_words(jwt_data.user_id)
-    return words
+    return GetAllWordsResponse(words=[Word(word=w) for w in words])
