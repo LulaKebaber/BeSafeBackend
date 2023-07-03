@@ -3,6 +3,7 @@ from typing import Optional, List
 
 from bson.objectid import ObjectId
 from pymongo.database import Database
+from ..router.router_get_contacts import Contact
 
 from ..utils.security import hash_password
 
