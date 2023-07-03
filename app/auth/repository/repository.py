@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List
 
 from bson.objectid import ObjectId
 from pymongo.database import Database
@@ -74,3 +74,10 @@ class WordsRepository:
                 }
             },
         )
+
+    def get_user_contacts(self, user_id: str) -> List[Contact]:
+        user = self.database["users"].find_one(
+            {"_id": ObjectId(user_id)}, {"contacts": 1}
+        )
+        contacts = user.get("contacts", []) if user else []
+        return [Contact(**c) for c in contacts]
