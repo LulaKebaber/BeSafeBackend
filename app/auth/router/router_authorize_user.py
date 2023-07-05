@@ -19,7 +19,7 @@ def authorize_user(
     input: OAuth2PasswordRequestForm = Depends(),
     svc: Service = Depends(get_service),
 ) -> AuthorizeUserResponse:
-    user = svc.repository.get_user_by_email(input.username)
+    user = svc.repository.get_user_by_username(input.username)
 
     if not user:
         raise InvalidCredentialsException
