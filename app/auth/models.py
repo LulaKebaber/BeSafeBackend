@@ -11,3 +11,8 @@ class Contact(AppModel):
 class Word(AppModel):
     word: str
     timestamp: datetime
+
+class Transcription(AppModel):
+    transcription: str
+    timestamp: datetime
+

@@ -3,6 +3,7 @@ from typing import Optional, List
 
 from bson.objectid import ObjectId
 from pymongo.database import Database
+from pymongo.results import DeleteResult, UpdateResult
 from ..models import Contact
 
 
@@ -109,11 +110,22 @@ class WordsRepository:
         ]
 
         return contacts_data
-        # user = self.database["users"].find_one({"_id": ObjectId(user_id)})
-        # contacts = []
-        # for i in range(len(user["phone"])):
-        #     contact = Contact(
-        #         name=user["name"][i], phone=user["phone"][i], gps=user["gps"][i]
-        #     )
-        #     contacts.append(contact)
-        # return contacts
+
+    def delete_shanyrak_by_id(self, word_id: str, user_id: str) -> DeleteResult:
+        return self.database["users"].delete_one(
+            {"_id": ObjectId(word_id), "user_id": ObjectId(user_id)}
+        )
+
+class TranscriptionRepository:
+    def __init__(self, database: Database):
+        self.database = database
+
+    def add_new_transcription(self, user_id: str, transcription: str):
+        transcription_data = {
+            "transcription": transcription.transcription,
+            "timestamp": transcription.timestamp,
+        }
+        self.database["users"].update_one(
+            filter={"_id": ObjectId(user_id)},
+            update={"$push": {"transcriptions": transcription_data}},
+        )
