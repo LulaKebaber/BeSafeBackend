@@ -17,7 +17,8 @@ class AddWordRequest(AppModel):
 
 class GetWordResponse(AppModel):
     id: Any = Field(alias="_id")
-    word: Word
+    word: str
+    timestamp: str
 
 @router.post("/users/words", status_code=status.HTTP_201_CREATED)
 def add_word(
@@ -28,4 +29,4 @@ def add_word(
     timestamp = datetime.now()
     word = Word(word=input.word, timestamp=timestamp)
     word_added = svc.word_repository.add_new_word(jwt_data.user_id, word)
-    return GetWordResponse(word=word_added, id=word_added["_id"])
+    return GetWordResponse(word=str(word.word), timestamp=str(word.timestamp), id=word_added["_id"])

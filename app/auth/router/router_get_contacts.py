@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Dict, Any
 
 from fastapi import Depends, status
 
@@ -13,8 +13,7 @@ from .dependencies import parse_jwt_user_data
 
 
 class GetAllContactsResponse(AppModel):
-    contacts: List[Contact]
-
+    contacts: List[Dict[str, Any]]
 
 @router.get(
     "/users/contacts",

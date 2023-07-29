@@ -5,10 +5,6 @@ from bson.objectid import ObjectId
 from pymongo.database import Database
 from pymongo.results import DeleteResult, UpdateResult
 from ..models import Contact
-
-
-# fr.om ..router.router_get_contacts import Contact
-
 from ..utils.security import hash_password
 
 
@@ -76,12 +72,7 @@ class WordsRepository:
         user = self.database["users"].find_one({"_id": ObjectId(user_id)}, {"words": 1})
         words = user.get("words", []) if user else []
 
-        # Convert the words list to a list of dictionaries with word and timestamp
-        words_with_timestamps = [
-            {"word": word["word"], "timestamp": word["timestamp"]} for word in words
-        ]
-
-        return words_with_timestamps
+        return words
 
     def add_new_contact(self, user_id: str, data: dict):
         contact_id = ObjectId() 
@@ -98,7 +89,7 @@ class WordsRepository:
         )
         return contact_data
     
-    def update_contact(self, user_id: str, contact_id: str, data: dict):
+    def update_contact(self, user_id: str, contact_id: str, data: dict) -> UpdateResult:
         update_data = {
                 "contacts.$.name": data["name"],
                 "contacts.$.phone": data["phone"],
@@ -107,8 +98,7 @@ class WordsRepository:
         self.database["users"].update_one(
             filter={"_id": ObjectId(user_id), "contacts._id": ObjectId(contact_id)},
             update={"$set": update_data},
-            ) 
-
+            )
 
     def get_user_contacts(self, user_id: str) -> List[Contact]:
         user = self.database["users"].find_one(
@@ -116,17 +106,7 @@ class WordsRepository:
         )
         contacts = user.get("contacts", []) if user else []
 
-        # Convert the words list to a list of dictionaries with word and timestamp
-        contacts_data = [
-            {
-                "name": contact["name"],
-                "phone": contact["phone"],
-                "gps": contact["gps"],
-            }
-            for contact in contacts
-        ]
-
-        return contacts_data
+        return contacts
 
     def delete_shanyrak_by_id(self, word_id: str, user_id: str) -> DeleteResult:
         return self.database["users"].delete_one(

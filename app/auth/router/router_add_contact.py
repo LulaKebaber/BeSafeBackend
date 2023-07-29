@@ -18,7 +18,9 @@ class AddContactRequest(AppModel):
 
 class GetContactsResponse(AppModel):
     id: Any = Field(alias="_id")
-    contact: Contact
+    name: str
+    phone: str
+    gps: bool
 
 @router.post("/users/contacts", status_code=status.HTTP_201_CREATED)
 def add_contact(
@@ -27,4 +29,4 @@ def add_contact(
     jwt_data: JWTData = Depends(parse_jwt_user_data),
 ):
     contact = svc.word_repository.add_new_contact(jwt_data.user_id, input.dict())
-    return GetContactsResponse(contact=contact, id=contact["_id"])
+    return GetContactsResponse(name=contact["name"], phone=contact["phone"], gps=contact["gps"], id=contact["_id"])
