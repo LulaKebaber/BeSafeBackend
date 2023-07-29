@@ -1,8 +1,10 @@
 from fastapi import Depends, status, Response
+from typing import Any
 
 from app.utils import AppModel
 from ..models import Word
 from datetime import datetime
+from pydantic import Field
 
 from ..adapters.jwt_service import JWTData
 from ..service import Service, get_service
@@ -13,6 +15,9 @@ from .dependencies import parse_jwt_user_data
 class AddWordRequest(AppModel):
     word: str
 
+class GetWordResponse(AppModel):
+    id: Any = Field(alias="_id")
+    word: Word
 
 @router.post("/users/words", status_code=status.HTTP_201_CREATED)
 def add_word(
@@ -22,5 +27,5 @@ def add_word(
 ):
     timestamp = datetime.now()
     word = Word(word=input.word, timestamp=timestamp)
-    svc.word_repository.add_new_word(jwt_data.user_id, word)
-    return Response(status_code=status.HTTP_201_CREATED)
+    word_added = svc.word_repository.add_new_word(jwt_data.user_id, word)
+    return GetWordResponse(word=word_added, id=word_added["_id"])

@@ -1,11 +1,14 @@
 from fastapi import Depends, status, Response
+from typing import Any
 
 from app.utils import AppModel
+from pydantic import Field
 
 from ..adapters.jwt_service import JWTData
 from ..service import Service, get_service
 from . import router
 from .dependencies import parse_jwt_user_data
+from ..models import Contact
 
 
 class AddContactRequest(AppModel):
@@ -13,6 +16,9 @@ class AddContactRequest(AppModel):
     phone: str
     gps: bool
 
+class GetContactsResponse(AppModel):
+    id: Any = Field(alias="_id")
+    contact: Contact
 
 @router.post("/users/contacts", status_code=status.HTTP_201_CREATED)
 def add_contact(
@@ -20,5 +26,5 @@ def add_contact(
     svc: Service = Depends(get_service),
     jwt_data: JWTData = Depends(parse_jwt_user_data),
 ):
-    svc.word_repository.add_new_contact(jwt_data.user_id, input.dict())
-    return Response(status_code=status.HTTP_201_CREATED)
+    contact = svc.word_repository.add_new_contact(jwt_data.user_id, input.dict())
+    return GetContactsResponse(contact=contact, id=contact["_id"])

@@ -7,7 +7,6 @@ class Contact(AppModel):
     phone: str
     gps: bool
 
-
 class Word(AppModel):
     word: str
     timestamp: datetime

@@ -55,13 +55,14 @@ class AuthRepository:
             },
         )
 
-
 class WordsRepository:
     def __init__(self, database: Database):
         self.database = database
 
     def add_new_word(self, user_id: str, word: str):
+        word_id = ObjectId()
         word_data = {
+            "_id": word_id,
             "word": word.word,
             "timestamp": word.timestamp,
         }
@@ -69,6 +70,7 @@ class WordsRepository:
             filter={"_id": ObjectId(user_id)},
             update={"$push": {"words": word_data}},
         )
+        return word_data
 
     def get_user_words(self, user_id: str):
         user = self.database["users"].find_one({"_id": ObjectId(user_id)}, {"words": 1})
@@ -82,7 +84,9 @@ class WordsRepository:
         return words_with_timestamps
 
     def add_new_contact(self, user_id: str, data: dict):
+        contact_id = ObjectId() 
         contact_data = {
+            "_id": contact_id,
             "name": data["name"],
             "phone": data["phone"],
             "gps": data["gps"],
@@ -92,12 +96,19 @@ class WordsRepository:
             filter={"_id": ObjectId(user_id)},
             update={"$push": {"contacts": contact_data}},
         )
+        return contact_data
     
-    def update_contact(self, user_id: str, data: dict) -> UpdateResult:
-        return self.database["users"].update_one(
-            filter={"_id": ObjectId(user_id)},
-            update={"$set": data},
-        )
+    def update_contact(self, user_id: str, contact_id: str, data: dict):
+        update_data = {
+                "contacts.$.name": data["name"],
+                "contacts.$.phone": data["phone"],
+                "contacts.$.gps": data["gps"],
+            }
+        self.database["users"].update_one(
+            filter={"_id": ObjectId(user_id), "contacts._id": ObjectId(contact_id)},
+            update={"$set": update_data},
+            ) 
+
 
     def get_user_contacts(self, user_id: str) -> List[Contact]:
         user = self.database["users"].find_one(
