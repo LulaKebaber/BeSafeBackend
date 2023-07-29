@@ -92,6 +92,12 @@ class WordsRepository:
             filter={"_id": ObjectId(user_id)},
             update={"$push": {"contacts": contact_data}},
         )
+    
+    def update_contact(self, user_id: str, data: dict) -> UpdateResult:
+        return self.database["users"].update_one(
+            filter={"_id": ObjectId(user_id)},
+            update={"$set": data},
+        )
 
     def get_user_contacts(self, user_id: str) -> List[Contact]:
         user = self.database["users"].find_one(

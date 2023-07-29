@@ -21,7 +21,7 @@ def transcribe_audio(
     response = requests.post(
         "https://api.openai.com/v1/audio/transcriptions",
         headers={
-            "Authorization": "Bearer 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",
+            "Authorization": "Bearer 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",
         },
         files={"file": (file.filename, file.file)},  # Corrected here
         data={"model": "whisper-1"},
