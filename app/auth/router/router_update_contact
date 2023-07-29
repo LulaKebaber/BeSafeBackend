@@ -9,7 +9,6 @@ from ..service import Service, get_service
 
 from . import router
 
-
 class UpdateContactResponse(AppModel):
     name: str
     phone: str
@@ -21,7 +20,7 @@ def update_contact(
     input: UpdateContactResponse,
     jwt_data: JWTData = Depends(parse_jwt_user_data),
     svc: Service = Depends(get_service),
-) -> dict[str, str]:
+):
     contact_updated = svc.repository.update_contact(
         user_id, jwt_data.user_id, input.dict()
     )
