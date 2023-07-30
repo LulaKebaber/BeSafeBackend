@@ -22,11 +22,11 @@ def update_contact(
 ):
     contact_updated = svc.word_repository.update_contact(jwt_data.user_id, contact_id, input.dict())
     
-    # if contact_updated.modified_count == 1:
-    #     return Response(status_code=200)
-    # return Response(status_code=404)
+    if contact_updated.modified_count > 0:
+        return Response(status_code=200)
+    return Response(status_code=404)
 
 
-    return "Successfuly changed!"
+    # return "Successfuly changed!"
 
 

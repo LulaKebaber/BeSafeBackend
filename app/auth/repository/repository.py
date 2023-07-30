@@ -95,7 +95,7 @@ class WordsRepository:
                 "contacts.$.phone": data["phone"],
                 "contacts.$.gps": data["gps"],
             }
-        self.database["users"].update_one(
+        return self.database["users"].update_one(
             filter={"_id": ObjectId(user_id), "contacts._id": ObjectId(contact_id)},
             update={"$set": update_data},
             )
@@ -108,10 +108,18 @@ class WordsRepository:
 
         return contacts
 
-    def delete_shanyrak_by_id(self, word_id: str, user_id: str) -> DeleteResult:
-        return self.database["users"].delete_one(
-            {"_id": ObjectId(word_id), "user_id": ObjectId(user_id)}
+    def delete_word_by_id(self, word_id: str, user_id: str) -> DeleteResult:
+        return self.database["users"].update_one(
+            {"_id": ObjectId(user_id)},
+            {"$pull": {"words": {"_id": ObjectId(word_id)}}}
         )
+    
+    def delete_contact_by_id(self, contact_id: str, user_id: str) -> DeleteResult:
+        return self.database["users"].update_one(
+            {"_id": ObjectId(user_id)},
+            {"$pull": {"contacts": {"_id": ObjectId(contact_id)}}}
+        )
+
 
 class TranscriptionRepository:
     def __init__(self, database: Database):
