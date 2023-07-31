@@ -6,7 +6,7 @@ from app.auth.router.dependencies import parse_jwt_user_data
 from ..service import Service, get_service
 from . import router
 
-@router.delete("/words/{word_id:str}")
+@router.delete("/users/words/{word_id:str}")
 def delete_word(
     word_id: str,
     jwt_data: JWTData = Depends(parse_jwt_user_data),
