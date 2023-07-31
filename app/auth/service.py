@@ -3,9 +3,9 @@ from pydantic import BaseSettings
 from app.config import database
 
 from .adapters.jwt_service import JwtService
-from .repository.repository import AuthRepository
-from .repository.repository import WordsRepository
-from .repository.repository import TranscriptionRepository
+from .repository.repository_auth import AuthRepository
+from .repository.repository_auth import WordsRepository
+from .repository.repository_auth import TranscriptionRepository
 
 
 class AuthConfig(BaseSettings):
