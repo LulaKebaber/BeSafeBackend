@@ -1,8 +1,8 @@
-from fastapi import Depends, status, File, UploadFile, HTTPException
+from fastapi import Depends, status, File, UploadFile, HTTPException, FastAPI
 from ..models import Transcription
 from datetime import datetime
 from ..adapters.jwt_service import JWTData
-from ..service import Service, get_service
+from ..service import Service, get_service, check_words_in_text
 from . import router
 from .dependencies import parse_jwt_user_data
 
@@ -21,7 +21,7 @@ def transcribe_audio(
     response = requests.post(
         "https://api.openai.com/v1/audio/transcriptions",
         headers={
-            "Authorization": "Bearer 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",
+            "Authorization": "Bearer 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",
         },
         files={"file": (file.filename, file.file)},  # Corrected here
         data={"model": "whisper-1"},
@@ -42,4 +42,19 @@ def transcribe_audio(
     transcription = Transcription(transcription=transcription, timestamp=timestamp)
     svc.transcription_repository.add_new_transcription(jwt_data.user_id, transcription)
 
-    return {'status': 'success', 'transcription': transcription}
+    words = svc.word_repository.get_user_words(user_id=jwt_data.user_id)
+    array_of_words = [word["word"] for word in words]
+
+    if check_words_in_text(array_of_words, data["text"]):
+        svc.repository.threat_recognised(jwt_data.user_id)
+        return True
+    return False
+    
+        # contacts = svc.word_repository.get_user_contacts(jwt_data.user_id)
+        # for contact in contacts:
+        #     # Предположим, что поле `username` указывает на имя пользователя для каждого контакта
+        #     # и что это уникальное значение для каждого пользователя
+        #     contact_username = contact["username"]
+        #     user = svc.repository.get_user_by_username(username=contact_username)
+        #     if user["threat_recognised"] == True:
+        #         return 

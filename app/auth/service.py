@@ -27,3 +27,8 @@ class Service:
 
 def get_service():
     return Service()
+
+def check_words_in_text(words, text):
+    word_set = set(words)
+    text_words = set(text.lower().split())  # Convert to lowercase to perform case-insensitive search
+    return bool(word_set.intersection(text_words))

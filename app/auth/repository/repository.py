@@ -18,6 +18,7 @@ class AuthRepository:
             "name": user["name"],
             "phone": user["phone"],
             "password": hash_password(user["password"]),
+            "threat_recognised": False,
             "created_at": datetime.utcnow(),
         }
 
@@ -51,6 +52,16 @@ class AuthRepository:
             },
         )
 
+    def threat_recognised(self, user_id: str):
+        self.database["users"].update_one(
+            filter={"_id": ObjectId(user_id)},
+            update={
+                "$set": {
+                    "threat_recognised": True,
+                }
+            },
+        )
+
 class WordsRepository:
     def __init__(self, database: Database):
         self.database = database
@@ -78,7 +89,7 @@ class WordsRepository:
         contact_id = ObjectId() 
         contact_data = {
             "_id": contact_id,
-            "name": data["name"],
+            "username": data["username"],
             "phone": data["phone"],
             "gps": data["gps"],
         }

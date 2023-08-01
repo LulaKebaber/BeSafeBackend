@@ -16,6 +16,7 @@ python-multipart = "^0.0.6"
 pymongo = {extras = ["srv"], version = "^4.3.3"}
 orjson = "^3.9.1"
 openai = "^0.27.8"
+python-socketio = "^5.8.0"
 
 
 [tool.poetry.group.dev.dependencies]
