@@ -11,6 +11,10 @@ from ..service import Service, get_service
 from . import router
 from .dependencies import parse_jwt_user_data
 
+class GetUsernameResponse(AppModel):
+    username: str
+    name: str
+    phone: str
 
 class GetAllContactsResponse(AppModel):
     contacts: List[Dict[str, Any]]
@@ -26,6 +30,14 @@ def get_contacts(
 ) -> GetAllContactsResponse:
     contacts = svc.word_repository.get_user_contacts(jwt_data.user_id)
     users = []
+
     for contact in contacts:
-        users.append(svc.repository.get_user_by_username(contact))
+        user = svc.repository.get_user_by_username(username=contact["username"])
+        users.append(GetUsernameResponse(
+                username=user["username"],
+                name=user["name"],
+                phone=user["phone"]
+            ))
     return GetAllContactsResponse(contacts=users)
+
+    
