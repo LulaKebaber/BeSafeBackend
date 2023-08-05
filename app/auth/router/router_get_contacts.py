@@ -25,4 +25,7 @@ def get_contacts(
     svc: Service = Depends(get_service),
 ) -> GetAllContactsResponse:
     contacts = svc.word_repository.get_user_contacts(jwt_data.user_id)
-    return GetAllContactsResponse(contacts=contacts)
+    users = []
+    for contact in contacts:
+        users.append(svc.repository.get_user_by_username(contact))
+    return GetAllContactsResponse(contacts=users)
