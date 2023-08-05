@@ -12,6 +12,7 @@ from . import router
 from .dependencies import parse_jwt_user_data
 
 class GetUsernameResponse(AppModel):
+    _id: str
     username: str
     name: str
     phone: str
@@ -34,6 +35,7 @@ def get_contacts(
     for contact in contacts:
         user = svc.repository.get_user_by_username(username=contact["username"])
         users.append(GetUsernameResponse(
+                _id=user["_id"],
                 username=user["username"],
                 name=user["name"],
                 phone=user["phone"]
