@@ -27,6 +27,11 @@ def check_for_threat(
     for contact in contacts:
         user = svc.repository.get_user_by_username(username=contact["username"])
         if user["threat_recognised"]:
-            threat_users.append( )
+            threat_users.append(GetUsernameResponse(
+                username=user["username"],
+                threat_recognised=True,
+                latitude=user["latitude"],
+                longitude=user["longitude"]
+            ))
 
     return GetAllContactsResponse(threats=threat_users)
