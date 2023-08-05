@@ -6,7 +6,11 @@ from ..service import Service, get_service, check_words_in_text
 from . import router
 from .dependencies import parse_jwt_user_data
 
+from dotenv import load_dotenv
+import os
 import requests
+
+load_dotenv()
 
 @router.post("/users/transcriptions", status_code=status.HTTP_201_CREATED)
 def transcribe_audio(
@@ -17,11 +21,13 @@ def transcribe_audio(
     # Make sure we're at the start of the file
     file.file.seek(0)
 
+    api_token = os.environ["OPENAI_API_TOKEN"]
+
     # Transcribe the audio file using OpenAI's Whisper ASR API
     response = requests.post(
         "https://api.openai.com/v1/audio/transcriptions",
         headers={
-            "Authorization": "Bearer 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",
+            "Authorization": f"Bearer {api_token}",
         },
         files={"file": (file.filename, file.file)},  # Corrected here
         data={"model": "whisper-1"},
