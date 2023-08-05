@@ -26,7 +26,8 @@ def add_word(
     svc: Service = Depends(get_service),
     jwt_data: JWTData = Depends(parse_jwt_user_data),
 ):
-    timestamp = datetime.now()
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
     word = Word(word=input.word, timestamp=timestamp)
     word_added = svc.word_repository.add_new_word(jwt_data.user_id, word)
     return GetWordResponse(word=str(word.word), timestamp=str(word.timestamp), id=word_added["_id"])
