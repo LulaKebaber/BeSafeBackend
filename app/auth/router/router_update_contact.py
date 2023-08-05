@@ -27,6 +27,3 @@ def update_contact(
     return Response(status_code=404)
 
 
-    # return "Successfuly changed!"
-
-

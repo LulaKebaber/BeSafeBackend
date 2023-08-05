@@ -18,6 +18,9 @@ class AuthRepository:
             "name": user["name"],
             "phone": user["phone"],
             "password": hash_password(user["password"]),
+            "message": "Please, help me!",
+            "latitude": 0,
+            "longitude": 0,
             "threat_recognised": False,
             "created_at": datetime.utcnow(),
         }
@@ -31,23 +34,22 @@ class AuthRepository:
             }
         )
         return user
-
+    
     def get_user_by_username(self, username: str) -> Optional[dict]:
         user = self.database["users"].find_one(
             {
-                "username": username,
+                "username": username
             }
         )
         return user
 
-    def update_user(self, user_id: str, data: dict):
-        self.database["users"].update_one(
+    def update_location(self, user_id: str, data: dict) -> UpdateResult:
+        return self.database["users"].update_one(
             filter={"_id": ObjectId(user_id)},
             update={
                 "$set": {
-                    "phone": data["phone"],
-                    "name": data["name"],
-                    "city": data["city"],
+                    "latitude": data["latitude"],
+                    "longitude": data["longitude"],
                 }
             },
         )

@@ -1,4 +1,4 @@
-from fastapi import Depends, status, Response, HTTPException
+from fastapi import Depends, status, HTTPException
 from typing import Any
 
 from app.utils import AppModel

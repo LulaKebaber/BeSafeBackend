@@ -49,12 +49,3 @@ def transcribe_audio(
         svc.repository.threat_recognised(jwt_data.user_id)
         return True
     return False
-    
-        # contacts = svc.word_repository.get_user_contacts(jwt_data.user_id)
-        # for contact in contacts:
-        #     # Предположим, что поле `username` указывает на имя пользователя для каждого контакта
-        #     # и что это уникальное значение для каждого пользователя
-        #     contact_username = contact["username"]
-        #     user = svc.repository.get_user_by_username(username=contact_username)
-        #     if user["threat_recognised"] == True:
-        #         return 
