@@ -73,7 +73,7 @@ class WordsRepository:
         word_data = {
             "_id": word_id,
             "word": word.word,
-            "timestamp": word.timestamp,
+            "timestamp": str(word.timestamp),
         }
         self.database["users"].update_one(
             filter={"_id": ObjectId(user_id)},
