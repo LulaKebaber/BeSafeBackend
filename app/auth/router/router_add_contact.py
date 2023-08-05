@@ -11,14 +11,10 @@ from .dependencies import parse_jwt_user_data
 
 class AddContactRequest(AppModel):
     username: str
-    phone: str
-    gps: bool
 
 class GetContactsResponse(AppModel):
     id: Any = Field(alias="_id")
     username: str
-    phone: str
-    gps: bool
 
 @router.post("/users/contacts", status_code=status.HTTP_201_CREATED)
 def add_contact(
@@ -26,14 +22,19 @@ def add_contact(
     svc: Service = Depends(get_service),
     jwt_data: JWTData = Depends(parse_jwt_user_data),
 ):
-    if not svc.repository.get_user_by_username(input.username):
+    user = svc.repository.get_user_by_username(input.username)
+
+    if not user:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="User is not found.",
         )
+    contacts = svc.word_repository.get_user_contacts(user_id=jwt_data.user_id)
+
+    for contact in contacts:
+        if contact["username"] == user["username"]:
+            return "User already added"
+        
     
-    contact = svc.word_repository.add_new_contact(jwt_data.user_id, input.dict())
-    return GetContactsResponse(username=contact["username"], phone=contact["phone"], gps=contact["gps"], id=contact["_id"])
-    
-    # contact = svc.word_repository.add_new_contact(jwt_data.user_id, input.dict())
-    # return GetContactsResponse(username=contact["username"], phone=contact["phone"], gps=contact["gps"], id=contact["_id"])
+    contact = svc.word_repository.add_new_contact(jwt_data.user_id, user=user)
+    return GetContactsResponse(id=contact["_id"], username=contact["username"])

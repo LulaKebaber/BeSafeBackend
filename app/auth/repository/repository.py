@@ -87,13 +87,12 @@ class WordsRepository:
 
         return words
 
-    def add_new_contact(self, user_id: str, data: dict):
-        contact_id = ObjectId() 
+    def add_new_contact(self, user_id: str, user: dict):
         contact_data = {
-            "_id": contact_id,
-            "username": data["username"],
-            "phone": data["phone"],
-            "gps": data["gps"],
+            "_id": user["_id"],
+            "username": user["username"],
+            "phone": user["phone"],
+            "name": user["name"],
         }
 
         self.database["users"].update_one(
